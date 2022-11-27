@@ -373,6 +373,8 @@ Type "help" for help.
 
 postgrdb=# create database test_db;
 CREATE DATABASE
+postgrdb=# create user "test-simple-user";
+CREATE ROLE
 vagrant@vagrant:~$ docker exec -it postgresdocknew psql -U admin -d test_db -f /var/lib/postgresql/test_db_bkp.sql
 SET
 SET
@@ -417,8 +419,8 @@ COPY 5
 ALTER TABLE
 ALTER TABLE
 ALTER TABLE
-psql:/var/lib/postgresql/test_db_bkp.sql:176: ERROR:  role "test-simple-user" does not exist
-psql:/var/lib/postgresql/test_db_bkp.sql:183: ERROR:  role "test-simple-user" does not exist
+GRANT
+GRANT
 ```
 ```
 test_db=# SELECT c.id, c.lastname, o.id, o.name FROM clients as c INNER JOIN orders as o ON o.id = c.booking;
