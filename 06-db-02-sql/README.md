@@ -339,7 +339,7 @@ postgresdock
 
 Поднимите новый пустой контейнер с PostgreSQL.
 ```
-docker run --rm --name postgresdocknew -e POSTGRES_PASSWORD=admin -e POSTGRES_USER=admin -e POSTGRES_DB=postgrdb -d -p 5432:5432 -v bkp:/var/lib/postgresql postgres:12 ous
+docker run --rm --name postgresdocknew -e POSTGRES_PASSWORD=admin -e POSTGRES_USER=admin -e POSTGRES_DB=postgrdb -d -p 5432:5432 -v bkp:/var/lib/postgresql postgres:12
 ```
 
 ```
