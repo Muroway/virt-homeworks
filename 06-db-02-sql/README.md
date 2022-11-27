@@ -375,6 +375,7 @@ postgrdb=# create database test_db;
 CREATE DATABASE
 postgrdb=# create user "test-simple-user";
 CREATE ROLE
+
 vagrant@vagrant:~$ docker exec -it postgresdocknew psql -U admin -d test_db -f /var/lib/postgresql/test_db_bkp.sql
 SET
 SET
