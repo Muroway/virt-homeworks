@@ -371,12 +371,8 @@ Password for user admin:
 psql (12.12 (Ubuntu 12.12-0ubuntu0.20.04.1), server 12.13 (Debian 12.13-1.pgdg110+1))
 Type "help" for help.
 
-postgrdb=# create database test_db
-postgrdb-# ;
+postgrdb=# create database test_db;
 CREATE DATABASE
-postgrdb=# \i exit
-exit: No such file or directory
-postgrdb=# \q
 vagrant@vagrant:~$ docker exec -it postgresdocknew psql -U admin -d test_db -f /var/lib/postgresql/test_db_bkp.sql
 SET
 SET
