@@ -27,8 +27,31 @@
 Дайте письменые ответы на следующие вопросы:
 
 - В чём отличие режимов работы сервисов в Docker Swarm кластере: replication и global?
+
+Существует два типа развертывания службы Docker Swarm: replication и global.
+
+**Replication** нужен для запуска идентичных задач. Например, вы решили развернуть службу HTTP с тремя репликами, каждая из которых обслуживает один и тот же контент.
+
+**Global** нужен для запуска конкретной задачи на каждом узле. Заранее заданного количества заданий нет. Каждый раз, когда вы добавляете узел в рой, оркестратор создает задачу, а планировщик назначает задачу новому узлу. Хорошими кандидатами для глобальных служб являются агенты мониторинга, антивирусные сканеры или другие типы контейнеров, которые вы хотите запускать на каждом узле в рое.
+
+
 - Какой алгоритм выбора лидера используется в Docker Swarm кластере?
+
+В кластере Docker Swarm могут одновременно работать несколько управляющих нод, которые могут в любой момент заменить вышедшего из строя лидера. 
+Для управления глобальным состоянием кластера используется алгоритм распределенного консенсуса Raft. http://thesecretlivesofdata.com/raft/
+Цель алгоритма убедиться в том, что все узлы менеджера, отвечающие за управление и планирование задач в кластере, сохраняют одно и то же согласованное состояние.
+Наличие одинакового согласованного состояния в кластере означает, что в случае сбоя любой узел диспетчера может взять на себя задачи и восстановить службы в стабильном состоянии. 
+
+
 - Что такое Overlay Network?
+
+**Overlay Network** - это шифрованная сеть создаваемая Docker поверх обычной сети, для безопасного обмена данными между контейнерами, подключенным к ней. Docker прозрачно обрабатывает маршрутизацию каждого пакета от и к правильному хосту демона Docker и правильному контейнеру назначения.
+Когда вы инициализируете рой или присоединяете хост Docker к существующему рою, на этом хосте Docker создаются две новые сети:
+оверлейная сеть под названием ingress, которая обрабатывает трафик управления и данных, связанный со службами роя. Когда вы создаете swarm-сервис и не подключаете его к определяемой пользователем оверлейной сети, он подключается к ingress сети по умолчанию.
+сеть-мост docker_gwbridge, которая соединяет отдельный демон Docker с другими демонами, участвующими в рое.
+
+Службы или контейнеры могут быть подключены более чем к одной сети одновременно. Службы или контейнеры могут взаимодействовать только между сетями, к которым они подключены.
+
 
 ## Задача 2
 
@@ -56,3 +79,31 @@ docker service ls
 docker swarm update --autolock=true
 ```
 
+Команда необходима для того чтобы Докер сгенерировал ключ шифрования, который необходим для блокировки и разблокировки кластера Docker Swarm.
+При перезапуске Docker в память каждого узла менеджера загружаются как ключ TLS, используемый для шифрования связи между узлами swarm, так и ключ, используемый для шифрования и расшифровки журналов Raft на диске. Docker может защитить общий ключ шифрования TLS и ключ, используемый для шифрования и расшифровки журналов Raft в состоянии покоя, позволяя вам стать владельцем этих ключей и требовать ручной разблокировки ваших менеджеров. Эта функция называется автоблокировкой .
+
+```
+[centos@node01 ~]$ sudo docker swarm update --autolock=true
+Swarm updated.
+To unlock a swarm manager after it restarts, run the `docker swarm unlock`
+command and provide the following key:
+
+    SWMKEY-1-Q..
+
+Please remember to store this key in a password manager, since without it you
+will not be able to restart the manager.
+[centos@node01 ~]$  sudo service docker restart
+Redirecting to /bin/systemctl restart docker.service
+[centos@node01 ~]$ sudo docker node ls
+Error response from daemon: Swarm is encrypted and needs to be unlocked before it can be used. Please use "docker swarm unlock" to unlock it.
+[centos@node01 ~]$ sudo docker swarm unlock
+Please enter unlock key:
+[centos@node01 ~]$ sudo docker node ls
+ID                            HOSTNAME             STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+izmfvfpll4c09devrxkh4sw4g *   node01.netology.yc   Ready     Active         Reachable        20.10.21
+f9b7h1c0eb1n5dma7alw2ksst     node02.netology.yc   Ready     Active         Reachable        20.10.21
+lqtgbkff288ibj32bcia8eeu7     node03.netology.yc   Ready     Active         Leader           20.10.21
+rzbdfo171q4jini916b6i0tji     node04.netology.yc   Ready     Active                          20.10.21
+ykma8u65olkwxgiv1tjo70wjp     node05.netology.yc   Ready     Active                          20.10.21
+jgzg9vdjo4hucue7ims8kq99g     node06.netology.yc   Ready     Active                          20.10.21
+```
