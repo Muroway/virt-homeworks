@@ -24,6 +24,7 @@ docker run -it --rm --name mysql_doc -e MYSQL_ROOT_PASSWORD=admin -p 3306:3306  
 mysql> CREATE DATABASE test_db
 ```
 ``` 
+docker exec -t mysql_doc sh
 sh-4.4# mysql -uroot -padmin test_db < test_dump.sql
 mysql: [Warning] Using a password on the command line interface can be insecure.
 ```
