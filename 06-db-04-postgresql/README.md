@@ -21,7 +21,6 @@ WARNING: psql major version 12, server major version 13.
 Type "help" for help.
 
 postgrdb=#
-
 ```
 
 Воспользуйтесь командой `\?` для вывода подсказки по имеющимся в `psql` управляющим командам.
@@ -308,6 +307,7 @@ root@9e3a10334152:/# mv test_database_pgdump.sql /var/lib/postgres/data/
 ```
 
 Как бы вы доработали бэкап-файл, чтобы добавить уникальность значения столбца `title` для таблиц `test_database`?
+
 Для уникальности можно добавить PRIMARY KEY, INDEX или CONSTRAINT.
 
 ---
