@@ -21,7 +21,31 @@
 В ответе приведите:
 - текст Dockerfile манифеста
 ```
+cat Dockerfile
+FROM centos:7
 
+ENV ES_HOME=/var/lib/elasticsearch
+
+ADD /elasticsearch-oss-7.10.2-x86_64.rpm /elasticsearch-oss-7.10.2-x86_64.rpm
+
+RUN  yum install -y elasticsearch-oss-7.10.2-x86_64.rpm
+
+RUN yum update -y
+
+RUN echo "node.name: netology_test" >> /etc/elasticsearch/elasticsearch.yml;\
+    echo "network.host: 0.0.0.0" >> /etc/elasticsearch/elasticsearch.yml;\
+    echo "discovery.type: single-node" >> /etc/elasticsearch/elasticsearch.yml;\
+    echo "path.repo: /var/lib/elasticsearch" >> /etc/elasticsearch/elasticsearch.yml;
+
+VOLUME [ "/var/lib/elasticsearch" ]
+
+EXPOSE 9200
+
+WORKDIR /usr/share/elasticsearch
+
+USER elasticsearch
+
+CMD ["./bin/systemd-entrypoint"]
 ```
 - ссылку на образ в репозитории dockerhub
 
